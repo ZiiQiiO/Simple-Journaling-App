@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="journal_prompts">
+        <item>What is one small thing that brought you joy today?</item>
+        <item>Describe a moment today when you felt fully present.</item>
+        <item>What is currently taking up the most space in your mind?</item>
+        <item>Write about a person you are grateful for and why.</item>
+        <item>What is something you learned recently that surprised you?</item>
+        <item>If today had a soundtrack, what would the opening song be?</item>
+        <item>What is a fear you would like to better understand?</item>
+        <item>Describe how your body feels right now, head to toe.</item>
+        <item>What is one thing you wish you had said today?</item>
+        <item>Write about a recent decision and what shaped it.</item>
+        <item>What is something you keep avoiding, and why?</item>
+        <item>If you could redo one moment from this week, which and how?</item>
+        <item>What does \"rest\" mean to you right now?</item>
+        <item>Describe a place where you feel most like yourself.</item>
+        <item>What is a habit you are proud of building?</item>
+        <item>What is a habit you would like to unlearn?</item>
+        <item>Write about a stranger you noticed today.</item>
+        <item>What is something you are hoping for this month?</item>
+        <item>What is a question you have been sitting with?</item>
+        <item>Describe a conversation you keep replaying.</item>
+        <item>What boundaries have served you well recently?</item>
+        <item>Write about something that made you laugh out loud.</item>
+        <item>What does your ideal slow morning look like?</item>
+        <item>What is a small kindness someone showed you?</item>
+        <item>If your future self could send one message today, what would it say?</item>
+        <item>What are you tolerating that you do not need to?</item>
+        <item>Describe a piece of art (any kind) that recently moved you.</item>
+        <item>What is one belief you have changed your mind about?</item>
+        <item>Write about a smell that takes you somewhere else.</item>
+        <item>What do you need more of in your life right now?</item>
+        <item>What do you need less of in your life right now?</item>
+        <item>What feels heavy today, and where do you feel it?</item>
+        <item>Describe an act of generosity you witnessed or did.</item>
+        <item>What is something you used to love that you would like to return to?</item>
+        <item>What would you do today if no one was watching or judging?</item>
+        <item>Write about a recent disappointment honestly.</item>
+        <item>What is something you have been putting off and what is underneath that?</item>
+        <item>What does success look like for you this season?</item>
+        <item>Describe a recent win, no matter how small.</item>
+        <item>What is something you are unlearning?</item>
+        <item>Write a letter to your past self from one year ago.</item>
+        <item>What part of your routine feels nourishing?</item>
+        <item>What part of your routine feels draining?</item>
+        <item>Describe the texture of today in three words. Then unpack each one.</item>
+        <item>What is a value you want to live more visibly?</item>
+        <item>Who in your life would you like to reconnect with?</item>
+        <item>Write about a recent dream you remember.</item>
+        <item>What is something you wish more people knew about you?</item>
+        <item>What does courage look like for you today?</item>
+        <item>Describe your relationship with your phone right now.</item>
+        <item>What is something you would like to forgive yourself for?</item>
+        <item>What is a compliment that stuck with you?</item>
+        <item>Write about something you saw outside today.</item>
+        <item>What is a story you tell yourself that might not be true?</item>
+        <item>What does \"enough\" mean to you?</item>
+        <item>Describe what your hands did today.</item>
+        <item>What feels uncertain right now, and what helps you sit with it?</item>
+        <item>What is something simple that grounds you?</item>
+        <item>Write about a meal you really enjoyed.</item>
+        <item>What is a recent moment of connection?</item>
+        <item>What does your inner critic sound like, and what would you say back?</item>
+        <item>Describe a season of your life you miss.</item>
+        <item>What is one tiny experiment you could try this week?</item>
+        <item>What does play look like for you now?</item>
+        <item>Write about a turning point you can see only in hindsight.</item>
+        <item>What are you curious about today?</item>
+        <item>What is something you want to say no to, and what makes that hard?</item>
+        <item>Describe the quality of your sleep lately.</item>
+        <item>What is a song lyric stuck in your head, and what does it stir up?</item>
+        <item>Write about a place you have never been but want to visit.</item>
+        <item>What does \"home\" mean to you right now?</item>
+        <item>What is something you have outgrown?</item>
+        <item>Describe an unexpected kindness from a stranger.</item>
+        <item>What is something you are proud of that no one else knows about?</item>
+        <item>Write about a recent moment you wanted to capture but did not.</item>
+        <item>What is your relationship with ambition right now?</item>
+        <item>What does friendship require of you right now?</item>
+        <item>Describe a comfort you turn to when overwhelmed.</item>
+        <item>What is a creative idea you keep coming back to?</item>
+        <item>What would you tell a friend going through what you are going through?</item>
+        <item>Write about a teacher (in any sense) who shaped you.</item>
+        <item>What does it feel like when you are at your best?</item>
+        <item>What does it feel like when you are at your worst, and what helps you return?</item>
+        <item>Describe what you wore today and how it made you feel.</item>
+        <item>What is a tradition you want to keep or start?</item>
+        <item>Write about a book, show, or game you cannot stop thinking about.</item>
+        <item>What is a question you wish someone would ask you?</item>
+        <item>What does your week need more breathing room for?</item>
+        <item>Describe the weather inside your chest today.</item>
+        <item>What is a small risk worth taking soon?</item>
+        <item>What is something you would like to be remembered for?</item>
+        <item>Write about a recent moment of relief.</item>
+        <item>What does showing up for yourself look like today?</item>
+        <item>What does showing up for someone else look like today?</item>
+        <item>Describe what nostalgia feels like in your body.</item>
+        <item>What is a piece of advice you would gently push back on?</item>
+        <item>What is one thing you trust about yourself?</item>
+        <item>Write about a moment you surprised yourself.</item>
+        <item>What is a way you would like to grow that has nothing to do with work?</item>
+        <item>What does today need you to release before sleep?</item>
+        <item>What is one truth you do not need to solve right now — only acknowledge?</item>
+        <item>Creative Thesis: If your current creative life had a thesis statement, what would it be, and what do you wish it were instead?</item>
+        <item>Originality vs. AI: If AI could eventually replicate everything humans do, what specifically do you still want to be remembered for?</item>
+        <item>Creative Drives: Write about why you create — what deep internal drive pushes you to express yourself?</item>
+        <item>Evolution of Creativity: Document how your personal definition of \"creativity\" has shifted since you first began making art.</item>
+        <item>Imaginative Stamina: When was the last time you felt you \"really imagined\" something? Describe that experience in detail.</item>
+        <item>Collaboration Fantasy: If you could collaborate with any person, living or dead, what would you create together?</item>
+        <item>Stylistic Evolution: Describe your current \"cognitive style\" — what words or phrases best capture how your mind processes creative ideas?</item>
+        <item>Intentional \"Bad\" Art: Describe an idea for something you would create intentionally \"bad\" just to see what the exercise reveals.</item>
+        <item>Creative Legacy: What specific creative contribution do you hope to leave behind that will outlast you?</item>
+        <item>Constraint as Catalyst: List ten personal or technical restrictions that could actually enhance your creativity rather than limit it.</item>
+        <item>The Narrative Mirror: What does your most recent creative success or failure tell you about your place in the larger narrative of your life?</item>
+        <item>Sensory Inspiration: What specific piece of music or nature is currently inspiring your creative work?</item>
+        <item>Creative Block Dialogue: Write a transcript of a short conversation between yourself and a creative block you are currently experiencing.</item>
+        <item>Energy Audit: What specific things drained the most energy from you this week, and how can you cut them out?</item>
+        <item>Energy Pursuits: What activities gave you the most energy recently? How can you spend more time doing them?</item>
+        <item>The 3-2-1 Reflection: Write down 3 things you learned today, 2 things you enjoyed, and 1 thing you will focus on tomorrow.</item>
+        <item>Quarterly Reset: Reflect on the lessons you have learned in the last three months as if you were closing a business quarter.</item>
+        <item>The 5-Year Filter: If you won’t remember a current worry in 5 years, is it worth the mental space it is taking up right now?</item>
+        <item>The Performance Check: What single constraint or rule would make your daily work significantly easier or better?</item>
+        <item>Pivot Readiness: How well do you handle it when things don’t go as planned? In what specific way can you grow to handle \"curveballs\" better?</item>
+        <item>Prioritization Check-In: What are your top three priorities for the month ahead, and what can be simplified to meet them?</item>
+        <item>The Accomplishment Gap: Is there a difference between what you say matters to you and how you actually spent your time this week?</item>
+        <item>Reframing Failure: How can you turn a recent technical or personal setback into a specific opportunity for growth?</item>
+        <item>Comfort Zone Audit: Are you currently stretching yourself toward soul-fulfilling goals, or are you staying in the safety of the familiar?</item>
+        <item>Urgent Questions: List the questions in your life to which you most urgently need answers right now.</item>
+        <item>The Daily Recharge: What specific action did you take today to recharge your mental battery?</item>
+        <item>Accomplishment Vision: What needs to happen this week for you to feel truly accomplished by Sunday night?</item>
+        <item>Feedback Impact: Reflect on a recent piece of feedback you received — how did it change your perspective or actions?</item>
+        <item>Thesis of Life: If your life were a novel chapter right now, what would the title be?</item>
+        <item>Inner Critic Anatomy: Describe your inner critic in vivid detail — what does it look like and what is its tone of voice?</item>
+        <item>The Million Dollar Test: If money were no concern, where would you travel next and why?</item>
+        <item>Pinnacle Moments: List the three most significant \"pinnacle moments\" of your life so far.</item>
+        <item>The Empathy Gap: Describe a moment when you felt deeply understood by another person. Could a machine ever replicate that?</item>
+        <item>Future Global Ritual: Imagine a future where journaling is a mandatory global ritual. How would the world change?</item>
+        <item>Acceptance State: What does it feel like in your body to fully accept a difficult truth rather than just resigning to it?</item>
+        <item>Internal Weather: If you were to describe your current emotional state as a landscape, what would it look like?</item>
+        <item>The Voice Check: In what area of your life are you not using your voice as much as you wish you would?</item>
+        <item>The Growth vs. Cruise: Are you currently in a period of intense growth or a period of \"cruising\"? Why does that work for you right now?</item>
+        <item>The Control Audit: Is there someone or something currently controlling how you live your life? Do you actually want to break free?</item>
+        <item>The 90-Year-Old’s Advice: Write a letter from your 90-year-old self to your current self about what actually mattered in the long run.</item>
+        <item>The 16-Year-Old’s List: What are five things you would tell your 16-year-old self that would surprise them?</item>
+        <item>Trait Analysis: What are the specific traits of the people who \"light you up\" when you are around them?</item>
+        <item>Accurate Self-Perception: Do you believe you see yourself accurately, as other people see you? Why or why not?</item>
+        <item>Common Ground Imagination: Use your imagination to find common ground with someone you have a difficult relationship with.</item>
+        <item>The Replacement Question: Where could you replace a recent assumption about a friend with a clarifying question?</item>
+        <item>Mentorship Fantasy: Is there a \"paper mentor\" (a writer or artist) you’d love to meet? What one question would you ask them?</item>
+        <item>Lasting Impact: How could you improve the way you treat the people you interact with daily?</item>
+        <item>The Investment Check: Who has invested in your well-being recently, and who could you invest in today?</item>
+        <item>The \"No\" List: Make a list of everything you would like to say \"no\" to this month.</item>
+        <item>The \"Yes\" List: Make a list of everything you would like to say \"yes\" to this month.</item>
+        <item>Relationship Attention: Which specific relationship in your life needs the most attention before the end of the year?</item>
+        <item>Unsent Apology: Write the apology letter to someone you never actually sent.</item>
+        <item>The Best Version Catalyst: Who in your life is currently pushing you to be the best version of yourself?</item>
+        <item>Object Feelings: Pick an object in your room and write a paragraph about its \"feelings\" toward you.</item>
+        <item>The 6-Word Story: Write a complete story about your day using exactly six words.</item>
+        <item>Unconventional Solutions: Think of a current problem you have. What is the most unconventional, \"outside the box\" solution you can imagine?</item>
+        <item>The Space Filter: If you could stop time for two months, what is the first thing you would do?</item>
+        <item>The Empathy Shift: Describe your favorite season as if it were a person with a specific personality.</item>
+        <item>Technological Gratitude: What specific piece of technology are you most grateful for today and why?</item>
+        <item>The \"Problem\" Perspective: What is a \"problem\" you have right now that others might actually love to have?</item>
+        <item>The Fresh Start Definition: What does the phrase \"fresh start\" actually mean to you in this current season?</item>
+        <item>The Meaning Source: Victor Frankl wrote that meaning is found in work, love, or suffering. Which is dominant for you today?</item>
+        <item>The Permanent Intelligence: How does the idea of \"permanent\" digital intelligence make you feel compared to human impermanence?</item>
+        <item>The Routine Break: What is one small way you can break from your routine and try something new this week?</item>
+        <item>The Observation Habit: Next time you want to pick up your phone, open your journal instead. What were you about to do?</item>
+        <item>The Sound of Stillness: Describe the specific sounds you hear in your environment when you are completely still for one minute.</item>
+        <item>The Childhood Dream: What did you always dream of doing as a kid, and how does that relate to what you do now?</item>
+        <item>The Current \"Currently\": Make a quick \"Currently\" list: what are you reading, watching, listening to, and feeling right now?</item>
+    </string-array>
+</resources>
