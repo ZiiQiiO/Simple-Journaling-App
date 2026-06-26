@@ -16,7 +16,7 @@ class SyncStatusConverters {
 
 @Database(
     entities = [JournalEntry::class, SavedTag::class, RecentPrompt::class, Draft::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(SyncStatusConverters::class)
@@ -32,13 +32,19 @@ abstract class JournalDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE journal_entries ADD COLUMN syncedTabId TEXT")
+            }
+        }
+
         fun get(context: Context): JournalDatabase = INSTANCE ?: synchronized(this) {
             INSTANCE ?: Room.databaseBuilder(
                 context.applicationContext,
                 JournalDatabase::class.java,
                 "journal.db"
             )
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build()
                 .also { INSTANCE = it }
         }

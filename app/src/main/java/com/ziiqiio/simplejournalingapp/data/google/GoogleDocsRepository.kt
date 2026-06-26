@@ -170,69 +170,70 @@ class GoogleDocsRepository(
         return docId
     }
 
-    suspend fun appendEntry(docId: String, entry: JournalEntry, zone: ZoneId): Unit = withContext(Dispatchers.IO) {
+    suspend fun appendEntry(docId: String, entry: JournalEntry, zone: ZoneId): String = withContext(Dispatchers.IO) {
         val docs = docsClient()
         val sections = JournalFormatter.formatSections(entry)
         val year = java.time.Instant.ofEpochMilli(entry.timestamp).atZone(zone).year.toString()
         val tabId = ensureYearTab(docs, docId, year)
 
-        // Step 1: append the separator at end of body.
-        docs.documents().batchUpdate(
-            docId,
-            BatchUpdateDocumentRequest().setRequests(
-                listOf(
-                    Request().setInsertText(
-                        InsertTextRequest()
-                            .setText(sections.separator)
-                            .setEndOfSegmentLocation(EndOfSegmentLocation().setTabId(tabId))
-                    )
-                )
-            )
-        ).execute()
+        val doc = docs.documents().get(docId).setIncludeTabsContent(true).execute()
+        val targetBody = findTabBody(doc.tabs.orEmpty(), tabId)
+            ?: error("Google Docs did not return body content for the $year tab.")
+        // The body endIndex is one past the final implicit newline. Insert before it so the
+        // new journal block lands inside the selected tab instead of after the segment.
+        val insertAt = ((targetBody.content.lastOrNull()?.endIndex ?: 1) - 1).coerceAtLeast(1)
 
-        // Step 2: find the current end index and insert the formatted entry with styling.
-        val doc1 = docs.documents().get(docId).setIncludeTabsContent(true).execute()
-        val targetBody = findTabBody(doc1.tabs.orEmpty(), tabId) ?: doc1.body
-        // The doc body's last content element's endIndex is "one past the last visible char";
-        // we insert at endIndex - 1 so the new text goes before the implicit final newline.
-        val endIdx1 = (targetBody.content.lastOrNull()?.endIndex ?: 1) - 1
-
-        val dateTimeStart = endIdx1
+        val dateTimeStart = insertAt + sections.separator.length
         val dateTimeEnd = dateTimeStart + sections.dateTime.length
         val moodEnergyStart = dateTimeEnd
         val moodEnergyEnd = moodEnergyStart + sections.moodEnergy.length
         val entryStart = moodEnergyEnd
         val entryEnd = entryStart + sections.entry.length
 
-        val requests = mutableListOf<Request>()
-        requests += Request().setInsertText(
-            InsertTextRequest()
-                .setText(sections.dateTime + sections.moodEnergy + sections.entry)
-                .setLocation(Location().setIndex(dateTimeStart).setTabId(tabId))
-        )
-        requests += Request().setUpdateParagraphStyle(
+        docs.documents().batchUpdate(
+            docId,
+            BatchUpdateDocumentRequest().setRequests(
+                listOf(
+                    Request().setInsertText(
+                        InsertTextRequest()
+                            .setText(sections.joined())
+                            .setLocation(Location().setIndex(insertAt).setTabId(tabId))
+                    )
+                )
+            )
+        ).execute()
+
+        val styleRequests = mutableListOf<Request>()
+        styleRequests += Request().setUpdateParagraphStyle(
             UpdateParagraphStyleRequest()
-                .setRange(Range().setStartIndex(dateTimeStart).setEndIndex(dateTimeEnd))
+                .setRange(tabRange(tabId, dateTimeStart, dateTimeEnd))
                 .setParagraphStyle(ParagraphStyle().setNamedStyleType("SUBTITLE"))
                 .setFields("namedStyleType")
         )
-        requests += Request().setUpdateParagraphStyle(
+        styleRequests += Request().setUpdateParagraphStyle(
             UpdateParagraphStyleRequest()
-                .setRange(Range().setStartIndex(moodEnergyStart).setEndIndex(moodEnergyEnd))
+                .setRange(tabRange(tabId, moodEnergyStart, moodEnergyEnd))
                 .setParagraphStyle(ParagraphStyle().setNamedStyleType("HEADING_4"))
                 .setFields("namedStyleType")
         )
         if (entryEnd > entryStart) {
-            requests += Request().setUpdateParagraphStyle(
+            styleRequests += Request().setUpdateParagraphStyle(
                 UpdateParagraphStyleRequest()
-                    .setRange(Range().setStartIndex(entryStart).setEndIndex(entryEnd))
+                    .setRange(tabRange(tabId, entryStart, entryEnd))
                     .setParagraphStyle(ParagraphStyle().setNamedStyleType("NORMAL_TEXT"))
                     .setFields("namedStyleType")
             )
         }
 
-        docs.documents().batchUpdate(docId, BatchUpdateDocumentRequest().setRequests(requests)).execute()
+        docs.documents().batchUpdate(docId, BatchUpdateDocumentRequest().setRequests(styleRequests)).execute()
+        tabId
     }
+
+    private fun tabRange(tabId: String, startIndex: Int, endIndex: Int): Range =
+        Range()
+            .setStartIndex(startIndex)
+            .setEndIndex(endIndex)
+            .setTabId(tabId)
 
     private fun ensureYearTab(docs: Docs, docId: String, year: String): String {
         val doc = docs.documents().get(docId).setIncludeTabsContent(true).execute()

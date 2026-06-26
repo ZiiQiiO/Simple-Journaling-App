@@ -60,11 +60,20 @@ class JournalRepository(
         dao.deleteEntry(id)
     }
 
+    suspend fun dismissSyncedEntries() {
+        dao.deleteSyncedEntries()
+    }
+
     suspend fun getEntry(id: Long): JournalEntry? = dao.getEntry(id)
 
     suspend fun ensureTag(name: String) {
         if (name.isBlank()) return
         dao.upsertTag(SavedTag(name.trim(), System.currentTimeMillis()))
+    }
+
+    suspend fun deleteTag(name: String) {
+        if (name.isBlank()) return
+        dao.deleteTag(name.trim())
     }
 
     suspend fun seedDefaultTagsIfNeeded() {

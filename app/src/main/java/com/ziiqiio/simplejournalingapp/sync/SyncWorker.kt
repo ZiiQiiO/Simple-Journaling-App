@@ -44,12 +44,13 @@ class SyncWorker(
         for (entry in pending) {
             try {
                 val targetId = docs.resolveTargetDocId(entry, zone)
-                docs.appendEntry(targetId, entry, zone)
+                val tabId = docs.appendEntry(targetId, entry, zone)
                 dao.updateEntry(
                     entry.copy(
                         status = SyncStatus.SYNCED,
                         syncedAt = System.currentTimeMillis(),
-                        syncedDocId = targetId
+                        syncedDocId = targetId,
+                        syncedTabId = tabId
                     )
                 )
                 syncedCount += 1

@@ -122,6 +122,10 @@ class EntryViewModel(private val container: AppContainer) : ViewModel() {
     fun removeTag(name: String) {
         _state.value = _state.value.copy(tags = _state.value.tags - name)
     }
+    fun deleteSavedTag(name: String) {
+        _state.value = _state.value.copy(tags = _state.value.tags - name)
+        viewModelScope.launch { container.journalRepository.deleteTag(name) }
+    }
     fun dismissBanner() {
         _state.value = _state.value.copy(restoredFromDraft = false)
     }
@@ -151,6 +155,10 @@ class EntryViewModel(private val container: AppContainer) : ViewModel() {
 
     fun dismissEntry(id: Long) {
         viewModelScope.launch { container.journalRepository.dismissEntry(id) }
+    }
+
+    fun dismissSyncedEntries() {
+        viewModelScope.launch { container.journalRepository.dismissSyncedEntries() }
     }
 
     fun consumeSavedFlag() { _state.value = _state.value.copy(justSaved = false) }

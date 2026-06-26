@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.WifiOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -100,6 +101,7 @@ fun EntryScreen(
     var tagSheetOpen by remember { mutableStateOf(false) }
     var detailEntry by remember { mutableStateOf<JournalEntry?>(null) }
     var syncHintOpen by remember { mutableStateOf(false) }
+    var confirmClearSyncedOpen by remember { mutableStateOf(false) }
     val pendingEntries = entries.filter { it.status != SyncStatus.SYNCED }
     val syncedEntries = entries.filter { it.status == SyncStatus.SYNCED }
 
@@ -228,6 +230,7 @@ fun EntryScreen(
             Spacer(Modifier.size(16.dp))
             TagsRow(
                 tags = state.tags,
+                allTagNames = (savedTags.map { it.tagName } + state.tags).distinctBy { it.lowercase() },
                 onAddTagTap = { tagSheetOpen = true },
                 onRemove = vm::removeTag
             )
@@ -268,9 +271,18 @@ fun EntryScreen(
                 title = "Synced Entries",
                 entries = syncedEntries,
                 emptyText = "Synced entries will appear here after they reach Google Docs.",
+                headerAction = if (syncedEntries.isNotEmpty()) {
+                    {
+                        TextButton(onClick = { confirmClearSyncedOpen = true }) {
+                            Text("Clear all")
+                        }
+                    }
+                } else {
+                    null
+                },
                 onDismiss = { vm.dismissEntry(it.id) },
                 onOpenGoogleDoc = { entry ->
-                    entry.syncedDocId?.let { docId -> openGoogleDoc(context, docId) }
+                    entry.syncedDocId?.let { docId -> openGoogleDoc(context, docId, entry.syncedTabId) }
                 },
                 onClick = { detailEntry = it }
             )
@@ -283,12 +295,34 @@ fun EntryScreen(
             savedTags = savedTags.map { it.tagName },
             currentlySelected = state.tags,
             onDismiss = { tagSheetOpen = false },
-            onSelect = { vm.addTag(it) }
+            onSelect = { vm.addTag(it) },
+            onDelete = { vm.deleteSavedTag(it) }
         )
     }
 
     detailEntry?.let { entry ->
         EntryDetailSheet(entry = entry, onClose = { detailEntry = null })
+    }
+
+    if (confirmClearSyncedOpen) {
+        AlertDialog(
+            onDismissRequest = { confirmClearSyncedOpen = false },
+            title = { Text("Clear synced entries?") },
+            text = { Text("This will dismiss all synced entries from this list. They will remain in Google Docs.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    vm.dismissSyncedEntries()
+                    confirmClearSyncedOpen = false
+                }) {
+                    Text("Clear all")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmClearSyncedOpen = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 
@@ -297,15 +331,23 @@ private fun EntrySection(
     title: String,
     entries: List<JournalEntry>,
     emptyText: String,
+    headerAction: (@Composable () -> Unit)? = null,
     onDismiss: (JournalEntry) -> Unit,
     onOpenGoogleDoc: (JournalEntry) -> Unit,
     onClick: (JournalEntry) -> Unit
 ) {
-    Text(
-        title,
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold
-    )
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            title,
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        headerAction?.invoke()
+    }
     Spacer(Modifier.size(8.dp))
 
     if (entries.isEmpty()) {
@@ -481,6 +523,7 @@ private fun IconStepper(
 @Composable
 private fun TagsRow(
     tags: List<String>,
+    allTagNames: List<String>,
     onAddTagTap: () -> Unit,
     onRemove: (String) -> Unit
 ) {
@@ -492,7 +535,7 @@ private fun TagsRow(
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             tags.forEach { name ->
-                val colors = tagInputChipColors(name)
+                val colors = tagInputChipColors(name, allTagNames)
                 InputChip(
                     selected = true,
                     onClick = { onRemove(name) },
@@ -518,11 +561,13 @@ private fun TagPickerSheet(
     savedTags: List<String>,
     currentlySelected: List<String>,
     onDismiss: () -> Unit,
-    onSelect: (String) -> Unit
+    onSelect: (String) -> Unit,
+    onDelete: (String) -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var query by remember { mutableStateOf("") }
+    var tagPendingDelete by remember { mutableStateOf<String?>(null) }
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
         Column(Modifier.padding(16.dp)) {
@@ -550,17 +595,32 @@ private fun TagPickerSheet(
                 ) {
                     filtered.forEach { name ->
                         val isSelected = name in currentlySelected
-                        val colors = tagFilterChipColors(name)
-                        FilterChip(
-                            selected = isSelected,
-                            onClick = {
-                                onSelect(name)
-                                scope.launch { sheetState.hide(); onDismiss() }
-                            },
-                            label = { Text(name) },
-                            colors = colors,
-                            modifier = Modifier.padding(vertical = 2.dp)
-                        )
+                        val colors = tagFilterChipColors(name, savedTags)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = {
+                                    onSelect(name)
+                                    scope.launch { sheetState.hide(); onDismiss() }
+                                },
+                                label = { Text(name) },
+                                colors = colors,
+                                modifier = Modifier.padding(vertical = 2.dp)
+                            )
+                            IconButton(
+                                onClick = { tagPendingDelete = name },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Close,
+                                    contentDescription = "Delete tag $name",
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
                     }
                 }
                 if (query.isNotBlank() && !exactMatch) {
@@ -575,42 +635,97 @@ private fun TagPickerSheet(
             Spacer(Modifier.size(8.dp))
         }
     }
+
+    tagPendingDelete?.let { name ->
+        AlertDialog(
+            onDismissRequest = { tagPendingDelete = null },
+            title = { Text("Delete tag?") },
+            text = { Text("Remove \"$name\" from your saved tags? Existing journal entries will keep their text.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onDelete(name)
+                    tagPendingDelete = null
+                }) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { tagPendingDelete = null }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 }
 
 @Composable
-private fun tagInputChipColors(tagName: String) = InputChipDefaults.inputChipColors(
-    selectedContainerColor = tagColor(tagName).copy(alpha = 0.22f),
-    selectedLabelColor = tagColor(tagName),
-    selectedLeadingIconColor = tagColor(tagName),
-    selectedTrailingIconColor = tagColor(tagName),
-)
-
-@Composable
-private fun tagFilterChipColors(tagName: String) = FilterChipDefaults.filterChipColors(
-    selectedContainerColor = tagColor(tagName).copy(alpha = 0.22f),
-    selectedLabelColor = tagColor(tagName),
-    selectedLeadingIconColor = tagColor(tagName),
-    selectedTrailingIconColor = tagColor(tagName),
-)
-
-private fun tagColor(tagName: String): Color {
-    val palette = listOf(
-        Color(0xFFE53935),
-        Color(0xFFD81B60),
-        Color(0xFF8E24AA),
-        Color(0xFF5E35B1),
-        Color(0xFF3949AB),
-        Color(0xFF1E88E5),
-        Color(0xFF039BE5),
-        Color(0xFF00897B),
-        Color(0xFF43A047),
-        Color(0xFFF4511E),
-        Color(0xFF6D4C41),
-        Color(0xFF546E7A),
+private fun tagInputChipColors(tagName: String, allTagNames: List<String>): androidx.compose.material3.SelectableChipColors {
+    val color = tagColor(tagName, allTagNames)
+    return InputChipDefaults.inputChipColors(
+        selectedContainerColor = color.copy(alpha = 0.22f),
+        selectedLabelColor = color,
+        selectedLeadingIconColor = color,
+        selectedTrailingIconColor = color,
     )
-    val index = (tagName.lowercase().hashCode().ushr(1)) % palette.size
-    return palette[index]
 }
+
+@Composable
+private fun tagFilterChipColors(tagName: String, allTagNames: List<String>): androidx.compose.material3.SelectableChipColors {
+    val color = tagColor(tagName, allTagNames)
+    return FilterChipDefaults.filterChipColors(
+        containerColor = color.copy(alpha = 0.14f),
+        labelColor = color,
+        iconColor = color,
+        selectedContainerColor = color.copy(alpha = 0.22f),
+        selectedLabelColor = color,
+        selectedLeadingIconColor = color,
+        selectedTrailingIconColor = color,
+    )
+}
+
+private fun tagColor(tagName: String, allTagNames: List<String>): Color {
+    defaultTagColors[tagName.lowercase()]?.let { return it }
+
+    val reservedColors = defaultTagColors.values.toSet()
+    val customPalette = tagPalette.filterNot { it in reservedColors }
+    val customTags = allTagNames
+        .map { it.trim() }
+        .filter { it.isNotEmpty() && it.lowercase() !in defaultTagColors }
+        .distinctBy { it.lowercase() }
+        .sortedBy { it.lowercase() }
+
+    val index = customTags.indexOfFirst { it.equals(tagName, ignoreCase = true) }
+    return customPalette.getOrElse(index) { customPalette[index.floorMod(customPalette.size)] }
+}
+
+private fun Int.floorMod(other: Int): Int = ((this % other) + other) % other
+
+private val defaultTagColors = mapOf(
+    "gratitude" to Color(0xFFD81B60),
+    "idea" to Color(0xFF1E88E5),
+    "goal" to Color(0xFF43A047),
+    "reflection" to Color(0xFF8E24AA),
+    "event" to Color(0xFFF4511E),
+)
+
+private val tagPalette = listOf(
+    Color(0xFFE53935),
+    Color(0xFFD81B60),
+    Color(0xFF8E24AA),
+    Color(0xFF5E35B1),
+    Color(0xFF3949AB),
+    Color(0xFF1E88E5),
+    Color(0xFF039BE5),
+    Color(0xFF00897B),
+    Color(0xFF43A047),
+    Color(0xFFF4511E),
+    Color(0xFF6D4C41),
+    Color(0xFF546E7A),
+    Color(0xFFC0A000),
+    Color(0xFF7CB342),
+    Color(0xFF00ACC1),
+    Color(0xFFFB8C00),
+)
 
 @Composable
 private fun EntryRow(
@@ -658,8 +773,9 @@ private fun EntryRow(
     }
 }
 
-private fun openGoogleDoc(context: Context, docId: String) {
-    val docUri = Uri.parse("https://docs.google.com/document/d/$docId/edit")
+private fun openGoogleDoc(context: Context, docId: String, tabId: String?) {
+    val tabQuery = tabId?.takeIf { it.isNotBlank() }?.let { "?tab=$it" }.orEmpty()
+    val docUri = Uri.parse("https://docs.google.com/document/d/$docId/edit$tabQuery")
     val docsIntent = Intent(Intent.ACTION_VIEW, docUri)
         .setPackage("com.google.android.apps.docs.editors.docs")
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

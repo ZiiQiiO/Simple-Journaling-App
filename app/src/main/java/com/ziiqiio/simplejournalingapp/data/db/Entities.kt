@@ -18,7 +18,8 @@ data class JournalEntry(
     val status: SyncStatus = SyncStatus.PENDING,
     val syncedAt: Long? = null,
     val docMonthKey: String? = null,
-    val syncedDocId: String? = null
+    val syncedDocId: String? = null,
+    val syncedTabId: String? = null
 )
 
 @Entity(tableName = "saved_tags")

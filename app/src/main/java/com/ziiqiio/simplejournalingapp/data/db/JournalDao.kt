@@ -20,6 +20,9 @@ interface JournalDao {
     @Query("DELETE FROM journal_entries WHERE id = :id")
     suspend fun deleteEntry(id: Long)
 
+    @Query("DELETE FROM journal_entries WHERE status = 'SYNCED'")
+    suspend fun deleteSyncedEntries()
+
     @Query("SELECT * FROM journal_entries ORDER BY timestamp DESC")
     fun observeAllEntries(): Flow<List<JournalEntry>>
 
@@ -41,6 +44,9 @@ interface JournalDao {
 
     @Query("SELECT * FROM saved_tags ORDER BY lastUsed DESC")
     suspend fun getTags(): List<SavedTag>
+
+    @Query("DELETE FROM saved_tags WHERE tagName = :name")
+    suspend fun deleteTag(name: String)
 
     // ----- recent prompts -----
     @Insert(onConflict = OnConflictStrategy.REPLACE)
